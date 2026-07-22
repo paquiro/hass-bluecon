@@ -43,9 +43,10 @@
       "init": {
         "title": "Integration Settings",
         "data": {
-          "lockStateReset": "Lock state reset timer"
+          "lockStateReset": "Lock state reset timer",
+          "maxStoredPhotos": "Maximum stored call photos per device"
         },
-        "description": "Time to reset the lock back to locked once it is unlocked, in seconds."
+        "description": "Time to reset the lock back to locked once it is unlocked, in seconds. Set the maximum number of call photos to keep on disk per device (0 = keep all)."
       }
     },
     "error": {

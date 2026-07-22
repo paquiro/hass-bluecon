@@ -43,9 +43,10 @@
       "init": {
         "title": "Configuración de la integración",
         "data": {
-          "lockStateReset": "Temporizador de reinicio del estado de bloqueo"
+          "lockStateReset": "Temporizador de reinicio del estado de bloqueo",
+          "maxStoredPhotos": "Máximo de fotos de llamada guardadas por dispositivo"
         },
-        "description": "Tiempo para volver a bloquear la cerradura una vez desbloqueada, en segundos."
+        "description": "Tiempo para volver a bloquear la cerradura una vez desbloqueada, en segundos. Número máximo de fotos de llamada a conservar en disco por dispositivo (0 = conservar todas)."
       }
     },
     "error": {

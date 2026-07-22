@@ -1,5 +1,5 @@
 import json
-from .const import CONF_LOCK_STATE_RESET, DOMAIN, SIGNAL_CALL_ENDED, SIGNAL_CALL_STARTED
+from .const import CONF_LOCK_STATE_RESET, CONF_MAX_STORED_PHOTOS, DEFAULT_MAX_STORED_PHOTOS, DOMAIN, SIGNAL_CALL_ENDED, SIGNAL_CALL_STARTED
 from .ConfigFolderOAuthTokenStorage import ConfigFolderOAuthTokenStorage
 from .ConfigFolderNotificationInfoStorage import ConfigFolderNotificationInfoStorage
 from .config_flow import BlueConConfigFlow
@@ -111,6 +111,6 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         hass.config_entries.async_update_entry(config_entry, data = {
                         CONF_CLIENT_ID: "",
                         CONF_CLIENT_SECRET: ""
-                    }, options = { CONF_LOCK_STATE_RESET: 5 })
+                    }, options = { CONF_LOCK_STATE_RESET: 5, CONF_MAX_STORED_PHOTOS: DEFAULT_MAX_STORED_PHOTOS })
     
     return True

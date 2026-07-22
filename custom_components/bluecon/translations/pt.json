@@ -43,9 +43,10 @@
       "init": {
         "title": "Definições da integração",
         "data": {
-          "lockStateReset": "Temporizador de reset do estado da fechadura"
+          "lockStateReset": "Temporizador de reset do estado da fechadura",
+          "maxStoredPhotos": "Máximo de fotos de chamada guardadas por dispositivo"
         },
-        "description": "Tempo para colocar o estado da fechadura como fechado depois de abrir, em segundos."
+        "description": "Tempo para colocar o estado da fechadura como fechado depois de abrir, em segundos. Número máximo de fotos de chamada a manter em disco por dispositivo (0 = manter todas)."
       }
     },
     "error": {

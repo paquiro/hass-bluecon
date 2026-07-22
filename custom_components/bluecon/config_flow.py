@@ -16,7 +16,7 @@ from .ConfigFolderNotificationInfoStorage import ConfigFolderNotificationInfoSto
 
 from bluecon import BlueConAPI, IOAuthTokenStorage, INotificationInfoStorage
 
-from custom_components.bluecon.const import CONF_LOCK_STATE_RESET, CONF_PACKAGE_NAME, CONF_APP_ID, CONF_PROJECT_ID, CONF_SENDER_ID
+from custom_components.bluecon.const import CONF_LOCK_STATE_RESET, CONF_MAX_STORED_PHOTOS, DEFAULT_MAX_STORED_PHOTOS, CONF_PACKAGE_NAME, CONF_APP_ID, CONF_PROJECT_ID, CONF_SENDER_ID
 
 from . import DOMAIN
 
@@ -63,7 +63,8 @@ class BlueConConfigFlow(ConfigFlow, domain = DOMAIN):
                         CONF_PACKAGE_NAME: user_input.get(CONF_PACKAGE_NAME, None)
                     }, 
                     options = {
-                        CONF_LOCK_STATE_RESET: 5
+                        CONF_LOCK_STATE_RESET: 5,
+                        CONF_MAX_STORED_PHOTOS: DEFAULT_MAX_STORED_PHOTOS
                     }
                 )
             except AbortFlow as e:
@@ -162,18 +163,20 @@ class BlueConOptionsFlow(OptionsFlow):
         error_info: dict[str, str] = {}
 
         lockTimeout = self.config_entry.options.get(CONF_LOCK_STATE_RESET, 5)
+        maxStoredPhotos = self.config_entry.options.get(CONF_MAX_STORED_PHOTOS, DEFAULT_MAX_STORED_PHOTOS)
 
         if user_input is not None:
-            if user_input[CONF_LOCK_STATE_RESET] >= 0:
+            if user_input[CONF_LOCK_STATE_RESET] >= 0 and user_input[CONF_MAX_STORED_PHOTOS] >= 0:
                 self.hass.config_entries.async_update_entry(self.config_entry, options=user_input)
                 return self.async_create_entry(title=None, data=None)
             else:
                 error_info['base'] = 'negative_value'
-        
+
         return self.async_show_form(
-            step_id = "init", 
+            step_id = "init",
             data_schema = vol.Schema({
-                vol.Required(CONF_LOCK_STATE_RESET, default = lockTimeout): int
+                vol.Required(CONF_LOCK_STATE_RESET, default = lockTimeout): int,
+                vol.Required(CONF_MAX_STORED_PHOTOS, default = maxStoredPhotos): int
             }),
             errors=error_info
         )

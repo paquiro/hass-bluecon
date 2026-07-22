@@ -43,9 +43,10 @@
       "init": {
         "title": "Ustawienia integracji",
         "data": {
-          "lockStateReset": "Zegar resetowania stanu blokady"
+          "lockStateReset": "Zegar resetowania stanu blokady",
+          "maxStoredPhotos": "Maksymalna liczba przechowywanych zdjęć wywołań na urządzenie"
         },
-        "description": "Czas do ponownego zablokowania zamka po odblokowaniu, w sekundach."
+        "description": "Czas do ponownego zablokowania zamka po odblokowaniu, w sekundach. Maksymalna liczba zdjęć wywołań przechowywanych na dysku dla każdego urządzenia (0 = przechowuj wszystkie)."
       }
     },
     "error": {
