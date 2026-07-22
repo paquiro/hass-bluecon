@@ -15,35 +15,35 @@ class ConfigFolderNotificationInfoStorage(INotificationInfoStorage):
     
     async def retrieveCredentials(self) -> dict[str, dict[str, Any]] | None:
         if asyncio.get_running_loop() == self.__hass.loop:
-            return self.__credentialsStore.async_load()
+            return await self.__credentialsStore.async_load()
         else:
             return asyncio.run_coroutine_threadsafe(
                 self.__credentialsStore.async_load(), self.__hass.loop
             ).result(timeout=2)
-    
+
     async def storeCredentials(self, credentials: dict[str, dict[str, Any]]):
         if asyncio.get_running_loop() == self.__hass.loop:
-            self.__credentialsStore.async_save(credentials)
+            await self.__credentialsStore.async_save(credentials)
         else:
             asyncio.run_coroutine_threadsafe(
                 self.__credentialsStore.async_save(credentials), self.__hass.loop
             ).result(timeout=2)
-    
+
     async def retrievePersistentIds(self) -> list[str] | None:
         if asyncio.get_running_loop() == self.__hass.loop:
-            return self.__persistentIdsStore.async_load()
+            return await self.__persistentIdsStore.async_load()
         else:
             return asyncio.run_coroutine_threadsafe(
                 self.__persistentIdsStore.async_load(), self.__hass.loop
             ).result(timeout=2)
-    
+
     async def storePersistentId(self, persistentId: str):
         persistentIds = await self.retrievePersistentIds()
         if type(persistentIds) is not list:
             persistentIds = []
         persistentIds.append(persistentId)
         if asyncio.get_running_loop() == self.__hass.loop:
-            self.__persistentIdsStore.async_save(persistentIds)
+            await self.__persistentIdsStore.async_save(persistentIds)
         else:
             asyncio.run_coroutine_threadsafe(
                 self.__persistentIdsStore.async_save(persistentIds), self.__hass.loop
