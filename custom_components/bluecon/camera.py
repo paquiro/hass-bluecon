@@ -1,5 +1,4 @@
 from homeassistant.components.camera import Camera
-from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.const import CONF_API_KEY
@@ -50,7 +49,6 @@ class BlueConStillCamera(Camera):
             async_dispatcher_connect(self.hass, SIGNAL_CALL_ENDED.format(self.deviceId), self._call_ended_callback)
         )
 
-    @callback
     async def _call_ended_callback(self) -> None:
         self.__image = await self.bluecon.getLastPicture(self.deviceId)
         self.async_schedule_update_ha_state(True)
