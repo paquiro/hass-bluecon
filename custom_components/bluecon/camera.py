@@ -11,12 +11,12 @@ from bluecon import BlueConAPI
 from .const import DEVICE_MANUFACTURER, DOMAIN, HASS_BLUECON_VERSION, SIGNAL_CALL_ENDED, CONF_PACKAGE_NAME, CONF_APP_ID, CONF_PROJECT_ID, CONF_SENDER_ID
 
 async def async_setup_entry(hass, entry: ConfigEntry, async_add_entities):
+    cameras = []
+
     if entry.data.get(CONF_SENDER_ID, None) is not None and entry.data.get(CONF_API_KEY, None) is not None and entry.data.get(CONF_PROJECT_ID, None) is not None and entry.data.get(CONF_APP_ID, None) is not None and entry.data.get(CONF_PACKAGE_NAME, None) is not None:
         bluecon : BlueConAPI = hass.data[DOMAIN][entry.entry_id]
 
         pairings = await bluecon.getPairings()
-
-        cameras = []
 
         for pairing in pairings:
             deviceInfo = await bluecon.getDeviceInfo(pairing.deviceId)
