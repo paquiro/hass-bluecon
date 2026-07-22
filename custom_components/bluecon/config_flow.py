@@ -1,3 +1,4 @@
+import logging
 from typing import Any
 from homeassistant.config_entries import ConfigFlow, OptionsFlow, ConfigEntry
 from homeassistant.data_entry_flow import FlowResult, AbortFlow
@@ -18,6 +19,8 @@ from bluecon import BlueConAPI, IOAuthTokenStorage, INotificationInfoStorage
 from custom_components.bluecon.const import CONF_LOCK_STATE_RESET, CONF_PACKAGE_NAME, CONF_APP_ID, CONF_PROJECT_ID, CONF_SENDER_ID
 
 from . import DOMAIN
+
+_LOGGER = logging.getLogger(__name__)
 
 class BlueConConfigFlow(ConfigFlow, domain = DOMAIN):
     VERSION = 6
@@ -66,6 +69,7 @@ class BlueConConfigFlow(ConfigFlow, domain = DOMAIN):
             except AbortFlow as e:
                 raise e
             except Exception:
+                _LOGGER.exception("Failed to authenticate with Fermax Blue")
                 error_info['base'] = 'invalid_auth'
         
         return self.async_show_form(
@@ -125,6 +129,7 @@ class BlueConConfigFlow(ConfigFlow, domain = DOMAIN):
             except AbortFlow as e:
                 raise e
             except Exception:
+                _LOGGER.exception("Failed to authenticate with Fermax Blue")
                 error_info['base'] = 'invalid_auth'
         
         return self.async_show_form(
