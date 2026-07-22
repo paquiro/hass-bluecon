@@ -58,6 +58,7 @@ If you are willing to contribute to it, please feel free to open PRs and I'll tr
 ## ⌨️ Contributions
 
 - [cvc90](https://github.com/cvc90) - Spanish translations and other improvements
+- [paquiro](https://github.com/paquiro) - Bug fixes and call photo history
 
 ## 📑 License
   MIT License | [Read more here](LICENSE) | Source of the [animated GIF (Loading Animation)](https://commons.wikimedia.org/wiki/File:Loading_Animation.gif) | Source of the [selfhosted Fonts](https://github.com/adobe-fonts/source-sans)

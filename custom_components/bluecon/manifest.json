@@ -5,7 +5,7 @@
     "documentation": "https://hass-bluecon.afonsogarcia.dev/",
     "issue_tracker": "https://github.com/AfonsoFGarcia/hass-bluecon/issues",
     "requirements": ["bluecon==0.4.3", "aiohttp", "rustPlusPushReceiver", "python-dateutil"],
-    "codeowners": ["@AfonsoFGarcia"],
+    "codeowners": ["@AfonsoFGarcia", "@paquiro"],
     "config_flow": true,
     "integration_type": "hub",
     "iot_class": "cloud_push"
