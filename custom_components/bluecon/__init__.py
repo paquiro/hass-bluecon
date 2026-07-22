@@ -88,23 +88,23 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         except FileNotFoundError:
             persistentIds = None
         
-        tempOAuthTokenStorage.storeOAuthToken(OAuthToken.fromJson(config_entry.data["token"]))
-        tempNotificationInfoStorage.storeCredentials(credentials)
+        await tempOAuthTokenStorage.storeOAuthToken(OAuthToken.fromJson(config_entry.data["token"]))
+        await tempNotificationInfoStorage.storeCredentials(credentials)
         for persistentId in persistentIds:
-            tempNotificationInfoStorage.storePersistentId(persistentId)
-        
+            await tempNotificationInfoStorage.storePersistentId(persistentId)
+
     if config_entry.version == 2:
-        
-        tempOAuthTokenStorage.storeOAuthToken(OAuthToken.fromJson(config_entry.data["token"]))
-        tempNotificationInfoStorage.storeCredentials(config_entry.data["credentials"])
+
+        await tempOAuthTokenStorage.storeOAuthToken(OAuthToken.fromJson(config_entry.data["token"]))
+        await tempNotificationInfoStorage.storeCredentials(config_entry.data["credentials"])
         for persistentId in config_entry.data["persistentIds"]:
-            tempNotificationInfoStorage.storePersistentId(persistentId)
+            await tempNotificationInfoStorage.storePersistentId(persistentId)
 
     if config_entry.version == 3:
-        tempOAuthTokenStorage.storeOAuthToken(OAuthToken.fromJson(config_entry.options["token"]))
-        tempNotificationInfoStorage.storeCredentials(config_entry.options["credentials"])
+        await tempOAuthTokenStorage.storeOAuthToken(OAuthToken.fromJson(config_entry.options["token"]))
+        await tempNotificationInfoStorage.storeCredentials(config_entry.options["credentials"])
         for persistentId in config_entry.options["persistentIds"]:
-            tempNotificationInfoStorage.storePersistentId(persistentId)
+            await tempNotificationInfoStorage.storePersistentId(persistentId)
 
     if config_entry.version < 6:
         config_entry.version = BlueConConfigFlow.VERSION
