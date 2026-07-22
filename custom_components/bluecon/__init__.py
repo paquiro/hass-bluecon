@@ -18,7 +18,7 @@ from custom_components.bluecon.const import CONF_PACKAGE_NAME, CONF_APP_ID, CONF
 
 
 
-PLATFORMS: list[str] = [Platform.BINARY_SENSOR, Platform.LOCK, Platform.CAMERA, Platform.SENSOR]
+PLATFORMS: list[str] = [Platform.BINARY_SENSOR, Platform.EVENT, Platform.LOCK, Platform.CAMERA, Platform.SENSOR]
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     def notification_callback(notification: INotification):
