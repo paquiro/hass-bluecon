@@ -34,13 +34,8 @@ class BlueConConnectionStatusBinarySensor(BinarySensorEntity):
         self.__bluecon : BlueConAPI = bluecon
         self.deviceId = deviceId
         self._attr_unique_id = f'{self.deviceId}_connection_status'.lower()
-        self.entity_id = f'{DOMAIN}.{self._attr_unique_id}'.lower()
         self._attr_is_on = deviceInfo is not None and deviceInfo.connectionState == STATE_CONNECTED
         self.__model = f'{deviceInfo.type} {deviceInfo.subType} {deviceInfo.family}'
-
-    @property
-    def unique_id(self) -> str | None:
-        return self.entity_id
 
     @property
     def device_class(self) -> BinarySensorDeviceClass | None:

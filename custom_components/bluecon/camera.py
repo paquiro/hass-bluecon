@@ -74,7 +74,6 @@ class BlueConStillCamera(Camera):
         self.bluecon = bluecon
         self.deviceId = deviceId
         self._attr_unique_id = f'{self.deviceId}_last_still'.lower()
-        self.entity_id = f'{DOMAIN}.{self._attr_unique_id}'.lower()
         self.__image: bytes | None = image
         self.__model = f'{deviceInfo.type} {deviceInfo.subType} {deviceInfo.family}'
         self.__photosDir = photosDir

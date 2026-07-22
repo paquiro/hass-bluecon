@@ -40,7 +40,6 @@ class BlueConLock(LockEntity):
         self.accessDoorName = accessDoorName
         self.accessDoor = accessDoor
         self._attr_unique_id = f'{self.lockId}_door_lock'.lower()
-        self.entity_id = f'{DOMAIN}.{self._attr_unique_id}'.lower()
         self._state = LockState.LOCKED
         self.__model = f'{deviceInfo.type} {deviceInfo.subType} {deviceInfo.family}'
         self.__lockTimeout = lockTimeout

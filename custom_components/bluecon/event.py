@@ -39,7 +39,6 @@ class BlueConCallEvent(EventEntity):
         self.deviceId = deviceId
         self.accessDoorName = accessDoorName
         self._attr_unique_id = f'{self.lockId}_ring'.lower()
-        self.entity_id = f'{DOMAIN}.{self._attr_unique_id}'.lower()
         self.__model = f'{deviceInfo.type} {deviceInfo.subType} {deviceInfo.family}'
 
     async def async_added_to_hass(self) -> None:

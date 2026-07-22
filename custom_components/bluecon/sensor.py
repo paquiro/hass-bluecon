@@ -38,16 +38,11 @@ class BlueConWifiStrenghtSensor(SensorEntity):
         self.__bluecon : BlueConAPI = bluecon
         self.deviceId = deviceId
         self._attr_unique_id = f'{self.deviceId}_connection_status'.lower()
-        self.entity_id = f'{DOMAIN}.{self._attr_unique_id}'.lower()
         self._attr_options = [SIGNAL_TERRIBLE, SIGNAL_BAD, SIGNAL_WEAK, SIGNAL_GOOD, SIGNAL_EXCELENT, SIGNAL_UNKNOWN]
         self._attr_native_value = getWirelessSignalText(deviceInfo.wirelessSignal)
         self.__model = f'{deviceInfo.type} {deviceInfo.subType} {deviceInfo.family}'
         self._attr_translation_key = "wifi-state"
 
-    @property
-    def unique_id(self) -> str | None:
-        return self.entity_id
-    
     @property
     def device_class(self) -> SensorDeviceClass | None:
         return SensorDeviceClass.ENUM
