@@ -80,4 +80,4 @@ def getWirelessSignalText(wirelessSignal):
     elif wirelessSignal == 4:
         return SIGNAL_EXCELENT
     else:
-        SIGNAL_UNKNOWN
+        return SIGNAL_UNKNOWN
