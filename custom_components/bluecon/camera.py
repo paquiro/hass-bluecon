@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from datetime import datetime
 from pathlib import Path
@@ -28,6 +29,9 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
+PHOTO_FETCH_ATTEMPTS = 4
+PHOTO_FETCH_DELAY_SECONDS = 8
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
     cameras = []
 
@@ -39,6 +43,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 
         for pairing in pairings:
             deviceInfo = await bluecon.getDeviceInfo(pairing.deviceId)
+            if not deviceInfo.photoCaller:
+                _LOGGER.info("Device %s does not take call photos (photoCaller is off), no camera created", pairing.deviceId)
             if deviceInfo.photoCaller:
                 image = await bluecon.getLastPicture(pairing.deviceId)
                 photosDir = Path(hass.config.path("www", PHOTO_STORAGE_SUBDIR, pairing.deviceId))
@@ -85,15 +91,38 @@ class BlueConStillCamera(Camera):
         )
 
     async def _call_ended_callback(self) -> None:
-        image = await self.bluecon.getLastPicture(self.deviceId)
-        if image is not None:
-            self.__image = image
+        # Fermax can take a few seconds to register the photo of a call, and
+        # getLastPicture returns the latest photo that exists, so an early request
+        # would hand back the photo of a previous call. Retry until it changes.
+        previousImage = self.__image
+        image = None
+        for attempt in range(1, PHOTO_FETCH_ATTEMPTS + 1):
             try:
-                await self.hass.async_add_executor_job(
-                    _save_photo_to_disk, self.__photosDir, image, self.__maxStoredPhotos
-                )
-            except OSError:
-                _LOGGER.exception("Failed to save call photo for device %s", self.deviceId)
+                candidate = await self.bluecon.getLastPicture(self.deviceId)
+            except Exception:
+                _LOGGER.exception("Failed to fetch the call photo for device %s", self.deviceId)
+                candidate = None
+
+            if candidate is not None and candidate != previousImage:
+                image = candidate
+                break
+
+            _LOGGER.info("No new call photo yet for device %s (attempt %s/%s)", self.deviceId, attempt, PHOTO_FETCH_ATTEMPTS)
+            if attempt < PHOTO_FETCH_ATTEMPTS:
+                await asyncio.sleep(PHOTO_FETCH_DELAY_SECONDS)
+
+        if image is None:
+            _LOGGER.info("Fermax has no new photo for the last call on device %s, nothing saved", self.deviceId)
+            return
+
+        self.__image = image
+        try:
+            await self.hass.async_add_executor_job(
+                _save_photo_to_disk, self.__photosDir, image, self.__maxStoredPhotos
+            )
+            _LOGGER.info("Saved call photo for device %s in %s", self.deviceId, self.__photosDir)
+        except OSError:
+            _LOGGER.exception("Failed to save call photo for device %s", self.deviceId)
         self.async_schedule_update_ha_state(True)
     
     @property
