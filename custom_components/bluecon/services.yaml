@@ -1,0 +1,7 @@
+simulate_call:
+  fields:
+    call_ended:
+      required: false
+      default: false
+      selector:
+        boolean:

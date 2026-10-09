@@ -1,4 +1,7 @@
 import json
+import logging
+import voluptuous as vol
+from homeassistant.helpers import config_validation as cv
 from .const import CONF_LOCK_STATE_RESET, CONF_MAX_STORED_PHOTOS, DEFAULT_MAX_STORED_PHOTOS, DOMAIN, SIGNAL_CALL_ENDED, SIGNAL_CALL_STARTED
 from .ConfigFolderOAuthTokenStorage import ConfigFolderOAuthTokenStorage
 from .ConfigFolderNotificationInfoStorage import ConfigFolderNotificationInfoStorage
@@ -12,20 +15,29 @@ from homeassistant.const import (
 )
 from homeassistant.helpers.dispatcher import dispatcher_send
 from bluecon import BlueConAPI, INotification, CallNotification, CallEndNotification, IOAuthTokenStorage, INotificationInfoStorage, OAuthToken
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant, ServiceCall, callback
 from homeassistant.config_entries import ConfigEntry
 from custom_components.bluecon.const import CONF_PACKAGE_NAME, CONF_APP_ID, CONF_PROJECT_ID, CONF_SENDER_ID
+
+_LOGGER = logging.getLogger(__name__)
 
 
 
 PLATFORMS: list[str] = [Platform.BINARY_SENSOR, Platform.EVENT, Platform.LOCK, Platform.CAMERA, Platform.SENSOR]
 
+SERVICE_SIMULATE_CALL = "simulate_call"
+SIMULATE_CALL_SCHEMA = vol.Schema({vol.Optional("call_ended", default = False): cv.boolean})
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     def notification_callback(notification: INotification):
         if type(notification) is CallNotification:
+            _LOGGER.info("Call started on device %s, door key %r", notification.deviceId, notification.accessDoorKey)
             dispatcher_send(hass, SIGNAL_CALL_STARTED.format(notification.deviceId, notification.accessDoorKey))
         elif type(notification) is CallEndNotification:
+            _LOGGER.info("Call ended on device %s", notification.deviceId)
             dispatcher_send(hass, SIGNAL_CALL_ENDED.format(notification.deviceId))
+        else:
+            _LOGGER.info("Ignoring notification of type %s", type(notification).__name__)
 
     hass.data[DOMAIN] = {
         "bluecon": None
@@ -55,6 +67,36 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     hass.data[DOMAIN][entry.entry_id] = bluecon
 
+    async def simulate_call(call: ServiceCall) -> None:
+        """Test helper: feeds a fake call (or call end) through the real notification path.
+
+        It exercises everything after the push has been received (event entity,
+        camera refresh and photo saving), but not the push delivery itself."""
+        callEnded = call.data["call_ended"]
+        for pairing in await bluecon.getPairings():
+            if callEnded:
+                notification_callback(CallEndNotification({
+                    "DeviceId": pairing.deviceId,
+                    "NotificationTitle": "Simulated call end",
+                    "NotificationBody": "Simulated call end",
+                    "CallAs": ""
+                }))
+            else:
+                for doorKey in pairing.accessDoorMap:
+                    notification_callback(CallNotification({
+                        "DeviceId": pairing.deviceId,
+                        "FermaxToken": "simulated",
+                        "SocketUrl": "",
+                        "NotificationTitle": "Simulated call",
+                        "NotificationBody": "Simulated call",
+                        "CallAs": "",
+                        "RoomId": "",
+                        "SendAcknowledge": False,
+                        "AccessDoorKey": doorKey
+                    }, "simulated"))
+
+    hass.services.async_register(DOMAIN, SERVICE_SIMULATE_CALL, simulate_call, schema = SIMULATE_CALL_SCHEMA)
+
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     entry.async_on_unload(entry.add_update_listener(update_listener))
@@ -68,7 +110,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id)
-    
+        hass.services.async_remove(DOMAIN, SERVICE_SIMULATE_CALL)
+
     return unload_ok
 
 async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
