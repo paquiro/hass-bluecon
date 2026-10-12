@@ -23,7 +23,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 
-PLATFORMS: list[str] = [Platform.BINARY_SENSOR, Platform.EVENT, Platform.LOCK, Platform.CAMERA, Platform.SENSOR, Platform.UPDATE]
+PLATFORMS: list[str] = [Platform.BINARY_SENSOR, Platform.EVENT, Platform.LOCK, Platform.CAMERA, Platform.SENSOR]
 
 SERVICE_SIMULATE_CALL = "simulate_call"
 SIMULATE_CALL_SCHEMA = vol.Schema({vol.Optional("call_ended", default = False): cv.boolean})
