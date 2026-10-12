@@ -7,7 +7,7 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import DeviceInfo
 from bluecon import BlueConAPI
 
-from .const import DEVICE_MANUFACTURER, DOMAIN, HASS_BLUECON_VERSION, SIGNAL_CALL_ENDED
+from .const import DEVICE_MANUFACTURER, DOMAIN, SIGNAL_CALL_ENDED
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -75,8 +75,7 @@ class BlueConWifiStrenghtSensor(SensorEntity):
             },
             name = f'{self.__model} {self.deviceId}',
             manufacturer = DEVICE_MANUFACTURER,
-            model = self.__model,
-            sw_version = HASS_BLUECON_VERSION
+            model = self.__model
         )
 
     async def async_update(self):
@@ -115,8 +114,7 @@ class BlueConCallHistorySensor(SensorEntity):
             },
             name = f'{self.__model} {self.deviceId}',
             manufacturer = DEVICE_MANUFACTURER,
-            model = self.__model,
-            sw_version = HASS_BLUECON_VERSION
+            model = self.__model
         )
 
     async def async_update(self):

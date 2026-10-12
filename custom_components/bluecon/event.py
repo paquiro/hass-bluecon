@@ -6,7 +6,7 @@ from bluecon import BlueConAPI
 from homeassistant.const import CONF_API_KEY
 from homeassistant.config_entries import ConfigEntry
 
-from .const import DEVICE_MANUFACTURER, DOMAIN, HASS_BLUECON_VERSION, SIGNAL_CALL_STARTED, CONF_PACKAGE_NAME, CONF_APP_ID, CONF_PROJECT_ID, CONF_SENDER_ID
+from .const import DEVICE_MANUFACTURER, DOMAIN, SIGNAL_CALL_STARTED, CONF_PACKAGE_NAME, CONF_APP_ID, CONF_PROJECT_ID, CONF_SENDER_ID
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
     events = []
@@ -59,6 +59,5 @@ class BlueConCallEvent(EventEntity):
             },
             name = f'{self.__model} {self.deviceId}',
             manufacturer = DEVICE_MANUFACTURER,
-            model = self.__model,
-            sw_version = HASS_BLUECON_VERSION
+            model = self.__model
         )

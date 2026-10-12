@@ -1,5 +1,5 @@
 import asyncio
-from .const import DEVICE_MANUFACTURER, DOMAIN, CONF_LOCK_STATE_RESET, HASS_BLUECON_VERSION
+from .const import DEVICE_MANUFACTURER, DOMAIN, CONF_LOCK_STATE_RESET
 from homeassistant.components.lock import LockEntity, LockState
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.core import HomeAssistant
@@ -89,6 +89,5 @@ class BlueConLock(LockEntity):
             },
             name = f'{self.__model} {self.deviceId}',
             manufacturer = DEVICE_MANUFACTURER,
-            model = self.__model,
-            sw_version = HASS_BLUECON_VERSION
+            model = self.__model
         )

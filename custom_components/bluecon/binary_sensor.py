@@ -3,7 +3,7 @@ from homeassistant.helpers.entity import DeviceInfo
 from bluecon import BlueConAPI
 from homeassistant.config_entries import ConfigEntry
 
-from .const import DEVICE_MANUFACTURER, DOMAIN, HASS_BLUECON_VERSION
+from .const import DEVICE_MANUFACTURER, DOMAIN
 
 STATE_CONNECTED = "Connected"
 
@@ -49,8 +49,7 @@ class BlueConConnectionStatusBinarySensor(BinarySensorEntity):
             },
             name = f'{self.__model} {self.deviceId}',
             manufacturer = DEVICE_MANUFACTURER,
-            model = self.__model,
-            sw_version = HASS_BLUECON_VERSION
+            model = self.__model
         )
 
     async def async_update(self):
