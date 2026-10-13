@@ -4,7 +4,7 @@
     "version": "1.1.2",
     "documentation": "https://github.com/paquiro/hass-bluecon",
     "issue_tracker": "https://github.com/paquiro/hass-bluecon/issues",
-    "requirements": ["bluecon @ git+https://github.com/paquiro/bluecon.git@2ef7e00aa47cd241e95dbd7b2fc8f14588edda8e", "setuptools<82", "aiohttp", "rustPlusPushReceiver", "python-dateutil"],
+    "requirements": ["bluecon @ git+https://github.com/paquiro/bluecon.git@8dc75dda0a5cfd60e7a86860fb7f83cb990c3cc2", "betterproto>=2.0.0b7", "aiohttp", "rustPlusPushReceiver", "python-dateutil"],
     "codeowners": ["@AfonsoFGarcia", "@paquiro"],
     "config_flow": true,
     "integration_type": "hub",
