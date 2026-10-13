@@ -1,10 +1,10 @@
 {
     "domain": "bluecon",
     "name": "Fermax Blue",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "documentation": "https://github.com/paquiro/hass-bluecon",
     "issue_tracker": "https://github.com/paquiro/hass-bluecon/issues",
-    "requirements": ["bluecon @ git+https://github.com/paquiro/bluecon.git@edd1bb0448e8dae9efba9df4877de7d4f7b496c4", "setuptools<82", "aiohttp", "rustPlusPushReceiver", "python-dateutil"],
+    "requirements": ["bluecon @ git+https://github.com/paquiro/bluecon.git@2ef7e00aa47cd241e95dbd7b2fc8f14588edda8e", "setuptools<82", "aiohttp", "rustPlusPushReceiver", "python-dateutil"],
     "codeowners": ["@AfonsoFGarcia", "@paquiro"],
     "config_flow": true,
     "integration_type": "hub",

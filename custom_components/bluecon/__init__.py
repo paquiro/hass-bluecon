@@ -28,6 +28,10 @@ PLATFORMS: list[str] = [Platform.BINARY_SENSOR, Platform.EVENT, Platform.LOCK, P
 SERVICE_SIMULATE_CALL = "simulate_call"
 SIMULATE_CALL_SCHEMA = vol.Schema({vol.Optional("call_ended", default = False): cv.boolean})
 
+def is_push_configured(entry: ConfigEntry) -> bool:
+    """The push notification listener needs all the Firebase settings of the Fermax app."""
+    return all(entry.data.get(key, None) is not None for key in (CONF_SENDER_ID, CONF_API_KEY, CONF_PROJECT_ID, CONF_APP_ID, CONF_PACKAGE_NAME))
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     def notification_callback(notification: INotification):
         if type(notification) is CallNotification:
@@ -56,7 +60,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         ConfigFolderNotificationInfoStorage(hass)
     )
 
-    if entry.data.get(CONF_SENDER_ID, None) is not None and entry.data.get(CONF_API_KEY, None) is not None and entry.data.get(CONF_PROJECT_ID, None) is not None and entry.data.get(CONF_APP_ID, None) is not None and entry.data.get(CONF_PACKAGE_NAME, None) is not None:
+    if is_push_configured(entry):
         await bluecon.startNotificationListener(hass)
 
         @callback
@@ -109,8 +113,11 @@ async def update_listener(hass: HomeAssistant, entry: ConfigEntry):
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unload_ok:
-        hass.data[DOMAIN].pop(entry.entry_id)
+        bluecon = hass.data[DOMAIN].pop(entry.entry_id)
         hass.services.async_remove(DOMAIN, SERVICE_SIMULATE_CALL)
+        if is_push_configured(entry):
+            # Without this, every reload (for example after changing an option) leaves the old listener running.
+            await bluecon.stopNotificationListener()
 
     return unload_ok
 
